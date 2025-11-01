@@ -143,7 +143,7 @@ function App() {
               </div>
               <div className="ml-3">
                 <p className="text-sm text-yellow-700">
-                  Por favor seleccione el número de locomotora y la ubicación para continuar con el registro.
+                  Por favor seleccioná el número de locomotora y la ubicación para continuar con el registro.
                 </p>
               </div>
             </div>
