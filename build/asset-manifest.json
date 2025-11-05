@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/SRN/static/css/main.9d6966a2.css",
+    "main.js": "/SRN/static/js/main.1c287397.js",
+    "index.html": "/SRN/index.html",
+    "main.9d6966a2.css.map": "/SRN/static/css/main.9d6966a2.css.map",
+    "main.1c287397.js.map": "/SRN/static/js/main.1c287397.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.9d6966a2.css",
+    "static/js/main.1c287397.js"
+  ]
+}

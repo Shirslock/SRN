@@ -60,7 +60,7 @@ const NivelesSection = ({ data, onChange }) => {
 
         <div>
           <label className="block text-sm font-semibold text-gray-700 mb-2">
-            Depósitos bomba hidroestática
+            Depósito de bomba hidroestática
           </label>
           <select
             value={data.bombaHidro}
