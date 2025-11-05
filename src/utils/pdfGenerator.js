@@ -238,7 +238,7 @@ export const generatePDF = async (
   yPos += 5;
 
   // EXTINTORES
-  addSection('🧯 EXTINTORES');
+  addSection('EXTINTORES');
   
   checkPageBreak(35);
   doc.setFontSize(9);
@@ -287,7 +287,7 @@ export const generatePDF = async (
   yPos += 30;
 
   // NIVELES
-  addSection('📊 NIVELES');
+  addSection('NIVELES');
   addField('Combustible', niveles.combustible ? niveles.combustible + ' litros' : 'N/A');
   addField('Caja Incrementadora 1', niveles.cajaInc1);
   addField('Caja Incrementadora 2', niveles.cajaInc2);
@@ -300,14 +300,14 @@ export const generatePDF = async (
 
   // FOTOGRAFÍAS GENERALES
   if (fotografias && fotografias.length > 0) {
-    addSection('📸 FOTOGRAFÍAS GENERALES');
+    addSection('FOTOGRAFÍAS GENERALES');
     addImages(fotografias, 'Documentación Fotográfica');
     yPos += 5;
   }
 
   // OBSERVACIONES GENERALES
   if (observacionesGenerales) {
-    addSection('📝 OBSERVACIONES GENERALES');
+    addSection('OBSERVACIONES GENERALES');
     checkPageBreak(30);
     
     doc.setFillColor(240, 253, 244);
@@ -347,7 +347,7 @@ export const generatePDF = async (
   doc.setTextColor(30, 64, 175);
   doc.setFontSize(11);
   doc.setFont('helvetica', 'bold');
-  doc.text('👤 DATOS DEL INSPECTOR', margin + 5, yPos + 8);
+  doc.text('DATOS DEL INSPECTOR', margin + 5, yPos + 8);
   
   doc.setTextColor(0, 0, 0);
   doc.setFontSize(9);
