@@ -1,5 +1,5 @@
 import React from 'react';
-import { Upload, X, Image } from 'lucide-react';
+import { Upload, X, Image as ImageIcon } from 'lucide-react';
 
 const CabinaSection = ({ numero, data, onChange }) => {
   const handleChange = (field, value) => {
@@ -58,6 +58,7 @@ const CabinaSection = ({ numero, data, onChange }) => {
             <option value="Manómetro 2">Manómetro 2</option>
             <option value="Manómetro 3">Manómetro 3</option>
             <option value="Todos">Todos</option>
+            <option value="Todos con Luces">Todos con Luces</option>
           </select>
         </div>
 
@@ -74,6 +75,7 @@ const CabinaSection = ({ numero, data, onChange }) => {
             <option value="LC">LC</option>
             <option value="LA">LA</option>
             <option value="Ambos">Ambos</option>
+            <option value="Todos Funcionan">Todos Funcionan</option>
           </select>
         </div>
 

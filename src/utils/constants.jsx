@@ -5,8 +5,8 @@ export const UBICACIONES = [
   'Vía tanque',
   'Cambio 17',
   'Cochera',
-  '3RO Plataforma',
-  '4Ta Plataforma'
+  'Via 3Ra Plataforma',
+  'Via 4Ta Plataforma'
 ];
 
 export const NIVELES_OPCIONES = ['Mínimo', '¼', '½', '¾', 'Completo'];
