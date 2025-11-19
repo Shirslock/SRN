@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Download } from 'lucide-react';
 import Login from './components/Auth/Login';
 import Header from './components/Layout/Header';
+import WelcomeModal from './components/Layout/WelcomeModal'; // NUEVO
 import CabinaSection from './components/FormSections/CabinaSection';
 import ExtintoresSection from './components/FormSections/ExtintoresSection';
 import NivelesSection from './components/FormSections/NivelesSection';
@@ -23,6 +24,7 @@ import {
 
 function App() {
   const [usuario, setUsuario] = useState(null);
+  const [showWelcomeModal, setShowWelcomeModal] = useState(false); // NUEVO
   const [vistaActual, setVistaActual] = useState('registro');
   const [locomotora, setLocomotora] = useState('');
   const [ubicacion, setUbicacion] = useState('');
@@ -39,10 +41,12 @@ function App() {
 
   const handleLogin = (userData) => {
     setUsuario(userData);
+    setShowWelcomeModal(true); // NUEVO - Mostrar modal al login
   };
 
   const handleLogout = () => {
     setUsuario(null);
+    setShowWelcomeModal(false); // NUEVO
     setVistaActual('registro');
     setLocomotora('');
     setUbicacion('');
@@ -59,7 +63,7 @@ function App() {
 
   const handleUbicacionChange = (newUbicacion) => {
     setUbicacion(newUbicacion);
-    setArea(''); // Resetear área al cambiar ubicación
+    setArea('');
   };
 
   const handleGeneratePDF = () => {
@@ -88,6 +92,13 @@ function App() {
 
   return (
     <div className="min-h-screen bg-gray-100">
+      {/* MODAL DE BIENVENIDA */}
+      <WelcomeModal 
+        isOpen={showWelcomeModal} 
+        onClose={() => setShowWelcomeModal(false)}
+        usuario={usuario}
+      />
+
       <Header 
         locomotora={locomotora} 
         ubicacion={ubicacion}
@@ -206,8 +217,12 @@ function App() {
                 <NivelesSection data={niveles} onChange={setNiveles} />
                 <FiltrosTurboSection data={filtrosTurbo} onChange={setFiltrosTurbo} />
                 <FotografiasSection data={fotografias} onChange={setFotografias} />
-                <ObservacionesSection data={observacionesGenerales} onChange={setObservacionesGenerales} fotografias={fotografiasObservaciones}
-                  onFotografiasChange={setFotografiasObservaciones} />
+                <ObservacionesSection 
+                  data={observacionesGenerales} 
+                  onChange={setObservacionesGenerales}
+                  fotografias={fotografiasObservaciones}
+                  onFotografiasChange={setFotografiasObservaciones}
+                />
 
                 <div className="flex justify-center mb-8">
                   <button
@@ -231,7 +246,7 @@ function App() {
                   </div>
                   <div className="ml-3">
                     <p className="text-sm text-yellow-700 font-semibold mb-1">
-                      Complete los datos requeridos para continuar:
+                      Completa los datos requeridos para continuar:
                     </p>
                     <ul className="text-sm text-yellow-700 list-disc list-inside">
                       {!locomotora && <li>Seleccione el número de locomotora</li>}
