@@ -135,6 +135,9 @@ const WelcomeModal = ({ isOpen, onClose, usuario }) => {
                     Buenas muchachos!
                     Actualmente hay 1 seccion de "Fotos Generales" que esta de mas (en estos dias la saco), la de abajo
                     de todo ya soporta multi foto.
+                    Sistema ATS, dar click en "Habilitado" para colocar N° de precinto.
+                    Saludos
+                    Cristian 
                   </p>
                 </div>
               </div>
