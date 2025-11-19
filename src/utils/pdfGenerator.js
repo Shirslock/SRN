@@ -2,12 +2,15 @@ import jsPDF from 'jspdf';
 
 export const generatePDF = async (
   locomotora, 
-  ubicacion, 
+  ubicacion,
+  area,
   cabina1, 
   cabina2, 
   extintores, 
-  niveles, 
+  niveles,
+  filtrosTurbo,
   fotografias,
+  fotografiasObservaciones,
   observacionesGenerales,
   usuario
 ) => {
@@ -56,17 +59,17 @@ export const generatePDF = async (
   doc.setTextColor(255, 255, 255);
   doc.setFontSize(20);
   doc.setFont('helvetica', 'bold');
-  doc.text('REGISTRO TÉCNICO DE LOCOMOTORA', pageWidth / 2, 20, { align: 'center' });
+  doc.text('REGISTRO TÉCNICO DE LA LOCOMOTORA', pageWidth / 2, 20, { align: 'center' });
   
   doc.setFontSize(10);
   doc.setFont('helvetica', 'normal');
-  doc.text('Sistema Ferroviario de Inspección Operativa', pageWidth / 2, 30, { align: 'center' });
+  doc.text('Sistema de Registro de Novedades', pageWidth / 2, 30, { align: 'center' });
   
   yPos = 50;
 
   // INFORMACIÓN BÁSICA
   doc.setFillColor(241, 245, 249);
-  doc.rect(margin, yPos, pageWidth - (margin * 2), 35, 'F');
+  doc.rect(margin, yPos, pageWidth - (margin * 2), 45, 'F');
   
   doc.setTextColor(0, 0, 0);
   doc.setFontSize(10);
@@ -82,16 +85,21 @@ export const generatePDF = async (
   doc.text(ubicacion, margin + 60, yPos + 16);
   
   doc.setFont('helvetica', 'bold');
-  doc.text('Fecha:', margin + 5, yPos + 24);
+  doc.text('Área:', margin + 5, yPos + 24);
   doc.setFont('helvetica', 'normal');
-  doc.text(fecha, margin + 60, yPos + 24);
+  doc.text(area, margin + 60, yPos + 24);
   
   doc.setFont('helvetica', 'bold');
-  doc.text('Hora:', margin + 110, yPos + 24);
+  doc.text('Fecha:', margin + 5, yPos + 32);
   doc.setFont('helvetica', 'normal');
-  doc.text(hora, margin + 130, yPos + 24);
+  doc.text(fecha, margin + 60, yPos + 32);
+  
+  doc.setFont('helvetica', 'bold');
+  doc.text('Hora:', margin + 110, yPos + 32);
+  doc.setFont('helvetica', 'normal');
+  doc.text(hora, margin + 130, yPos + 32);
 
-  yPos += 45;
+  yPos += 50;
 
   // FUNCIÓN PARA AGREGAR SECCIÓN
   const addSection = (title) => {
@@ -122,7 +130,7 @@ export const generatePDF = async (
     
     doc.setTextColor(30, 41, 59);
     doc.setFont('helvetica', 'normal');
-    const labelWidth = doc.getTextWidth(label + ': ');
+    const labelWidth = doc.getTextWidth(label + ': ') + 5; // +5 para espacio extra
     doc.text(value || 'N/A', margin + 5 + labelWidth, yPos + 5);
     
     yPos += 10;
@@ -164,7 +172,7 @@ export const generatePDF = async (
     doc.setTextColor(30, 64, 175);
     doc.setFontSize(10);
     doc.setFont('helvetica', 'bold');
-    doc.text(`📷 ${title}`, margin, yPos);
+    doc.text(`${title}`, margin, yPos);
     yPos += 8;
 
     const imgWidth = 40;
@@ -213,6 +221,10 @@ export const generatePDF = async (
   addField('Pava eléctrica', cabina1.pava);
   addField('Perchero', cabina1.perchero);
   addField('Limpiaparabrisas', cabina1.limpiaparabrisas);
+  addField('ATS', cabina1.ats); // NUEVO
+  if (cabina1.ats === 'Habilitado' && cabina1.atsPrecinto) {
+    addField('Precinto ATS', cabina1.atsPrecinto); // NUEVO
+  }
   
   addImages(cabina1.fotos, 'Fotografías Cabina 1');
   addObservaciones(cabina1.observaciones);
@@ -231,6 +243,10 @@ export const generatePDF = async (
   addField('Pava eléctrica', cabina2.pava);
   addField('Perchero', cabina2.perchero);
   addField('Limpiaparabrisas', cabina2.limpiaparabrisas);
+  addField('ATS', cabina1.ats); // NUEVO
+  if (cabina1.ats === 'Habilitado' && cabina1.atsPrecinto) {
+    addField('Precinto ATS', cabina1.atsPrecinto); // NUEVO
+  }
   
   addImages(cabina2.fotos, 'Fotografías Cabina 2');
   addObservaciones(cabina2.observaciones);
@@ -240,25 +256,26 @@ export const generatePDF = async (
   // EXTINTORES
   addSection('EXTINTORES');
   
-  checkPageBreak(35);
+  checkPageBreak(40);
   doc.setFontSize(9);
   doc.setFont('helvetica', 'bold');
   
   // Cabina 1
   doc.setFillColor(248, 250, 252);
-  doc.rect(margin, yPos, 60, 25, 'F');
+  doc.rect(margin, yPos, 60, 30, 'F');
   doc.setTextColor(30, 64, 175);
   doc.text('Cabina 1', margin + 5, yPos + 5);
   doc.setFont('helvetica', 'normal');
   doc.setTextColor(0, 0, 0);
   doc.setFontSize(8);
   doc.text(`Estado: ${extintores.cabina1.estado || 'N/A'}`, margin + 5, yPos + 11);
-  doc.text(`Carga: ${extintores.cabina1.conCarga ? 'Con carga' : 'Sin carga'}`, margin + 5, yPos + 16);
-  doc.text(`Precinto: ${extintores.cabina1.precinto || 'N/A'}`, margin + 5, yPos + 21);
+  doc.text(`Vencimiento: ${extintores.cabina1.vencimiento || 'N/A'}`, margin + 5, yPos + 16);
+  doc.text(`Carga: ${extintores.cabina1.conCarga ? 'Con carga' : 'Sin carga'}`, margin + 5, yPos + 21);
+  doc.text(`Precinto: ${extintores.cabina1.precinto || 'N/A'}`, margin + 5, yPos + 26);
 
   // Cabina 2
   doc.setFillColor(248, 250, 252);
-  doc.rect(margin + 65, yPos, 60, 25, 'F');
+  doc.rect(margin + 65, yPos, 60, 30, 'F');
   doc.setFont('helvetica', 'bold');
   doc.setTextColor(30, 64, 175);
   doc.setFontSize(9);
@@ -267,12 +284,13 @@ export const generatePDF = async (
   doc.setTextColor(0, 0, 0);
   doc.setFontSize(8);
   doc.text(`Estado: ${extintores.cabina2.estado || 'N/A'}`, margin + 70, yPos + 11);
-  doc.text(`Carga: ${extintores.cabina2.conCarga ? 'Con carga' : 'Sin carga'}`, margin + 70, yPos + 16);
-  doc.text(`Precinto: ${extintores.cabina2.precinto || 'N/A'}`, margin + 70, yPos + 21);
+  doc.text(`Vencimiento: ${extintores.cabina2.vencimiento || 'N/A'}`, margin + 70, yPos + 16);
+  doc.text(`Carga: ${extintores.cabina2.conCarga ? 'Con carga' : 'Sin carga'}`, margin + 70, yPos + 21);
+  doc.text(`Precinto: ${extintores.cabina2.precinto || 'N/A'}`, margin + 70, yPos + 26);
 
   // Motor Diesel
   doc.setFillColor(248, 250, 252);
-  doc.rect(margin + 130, yPos, 60, 25, 'F');
+  doc.rect(margin + 130, yPos, 60, 30, 'F');
   doc.setFont('helvetica', 'bold');
   doc.setTextColor(30, 64, 175);
   doc.setFontSize(9);
@@ -281,10 +299,11 @@ export const generatePDF = async (
   doc.setTextColor(0, 0, 0);
   doc.setFontSize(8);
   doc.text(`Estado: ${extintores.motorDiesel.estado || 'N/A'}`, margin + 135, yPos + 11);
-  doc.text(`Carga: ${extintores.motorDiesel.conCarga ? 'Con carga' : 'Sin carga'}`, margin + 135, yPos + 16);
-  doc.text(`Precinto: ${extintores.motorDiesel.precinto || 'N/A'}`, margin + 135, yPos + 21);
+  doc.text(`Vencimiento: ${extintores.motorDiesel.vencimiento || 'N/A'}`, margin + 135, yPos + 16);
+  doc.text(`Carga: ${extintores.motorDiesel.conCarga ? 'Con carga' : 'Sin carga'}`, margin + 135, yPos + 21);
+  doc.text(`Precinto: ${extintores.motorDiesel.precinto || 'N/A'}`, margin + 135, yPos + 26);
 
-  yPos += 30;
+  yPos += 35;
 
   // NIVELES
   addSection('NIVELES');
@@ -298,9 +317,62 @@ export const generatePDF = async (
 
   yPos += 5;
 
+  // FILTROS DE TURBO
+  addSection('FILTROS DE TURBO');
+  
+  checkPageBreak(20);
+  
+  // Filtro 1
+  doc.setFillColor(248, 250, 252);
+  doc.rect(margin, yPos, 85, 15, 'F');
+  
+  doc.setTextColor(30, 64, 175);
+  doc.setFontSize(10);
+  doc.setFont('helvetica', 'bold');
+  doc.text('Filtro 1:', margin + 5, yPos + 6);
+  
+  // Color del estado
+  let colorFill1 = [200, 200, 200]; // Gris por defecto
+  if (filtrosTurbo.filtro1 === 'Verde') colorFill1 = [34, 197, 94];
+  if (filtrosTurbo.filtro1 === 'Amarillo') colorFill1 = [250, 204, 21];
+  if (filtrosTurbo.filtro1 === 'Rojo') colorFill1 = [239, 68, 68];
+  
+  doc.setFillColor(...colorFill1);
+  doc.circle(margin + 30, yPos + 4, 3, 'F');
+  
+  doc.setTextColor(0, 0, 0);
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(9);
+  doc.text(filtrosTurbo.filtro1 || 'N/A', margin + 38, yPos + 6);
+  
+  // Filtro 2
+  doc.setFillColor(248, 250, 252);
+  doc.rect(margin + 105, yPos, 85, 15, 'F');
+  
+  doc.setTextColor(30, 64, 175);
+  doc.setFontSize(10);
+  doc.setFont('helvetica', 'bold');
+  doc.text('Filtro 2:', margin + 110, yPos + 6);
+  
+  // Color del estado
+  let colorFill2 = [200, 200, 200]; // Gris por defecto
+  if (filtrosTurbo.filtro2 === 'Verde') colorFill2 = [34, 197, 94];
+  if (filtrosTurbo.filtro2 === 'Amarillo') colorFill2 = [250, 204, 21];
+  if (filtrosTurbo.filtro2 === 'Rojo') colorFill2 = [239, 68, 68];
+  
+  doc.setFillColor(...colorFill2);
+  doc.circle(margin + 135, yPos + 4, 3, 'F');
+  
+  doc.setTextColor(0, 0, 0);
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(9);
+  doc.text(filtrosTurbo.filtro2 || 'N/A', margin + 143, yPos + 6);
+  
+  yPos += 20;
+
   // FOTOGRAFÍAS GENERALES
   if (fotografias && fotografias.length > 0) {
-    addSection('FOTOGRAFÍAS GENERALES');
+    addSection('FOTOGRAFIAS GENERALES');
     addImages(fotografias, 'Documentación Fotográfica');
     yPos += 5;
   }
@@ -334,6 +406,14 @@ export const generatePDF = async (
     yPos += obsHeight + 5;
   }
 
+  if (fotografiasObservaciones && fotografiasObservaciones.length > 0) {
+    addImages(fotografiasObservaciones, 'Fotografías de Observaciones');
+    yPos += 5;
+  }
+
+
+  
+
   // FIRMA DEL INSPECTOR
   checkPageBreak(40);
   yPos += 10;
@@ -347,7 +427,7 @@ export const generatePDF = async (
   doc.setTextColor(30, 64, 175);
   doc.setFontSize(11);
   doc.setFont('helvetica', 'bold');
-  doc.text('DATOS DEL INSPECTOR', margin + 5, yPos + 8);
+  doc.text('DATOS DEL INSPECTOR / CONDUCTOR', margin + 5, yPos + 8);
   
   doc.setTextColor(0, 0, 0);
   doc.setFontSize(9);
@@ -371,9 +451,9 @@ export const generatePDF = async (
   doc.setFontSize(7);
   doc.setTextColor(100, 116, 139);
   doc.setFont('helvetica', 'italic');
-  doc.text('Documento generado electrónicamente por el Sistema Ferroviario de Registro Técnico', pageWidth / 2, yPos, { align: 'center' });
+  doc.text('Documento generado electrónicamente por el Sistema de Registro de Novedades', pageWidth / 2, yPos, { align: 'center' });
 
   // Descargar PDF
-  const fileName = `Registro_Locomotora_${locomotora}_${fecha.replace(/\//g, '-')}_${hora.replace(/:/g, '-')}.pdf`;
+  const fileName = `Registro_Locomotora_${locomotora}_${ubicacion.replace(/\s+/g, '_')}_${area.replace(/\s+/g, '_')}_${fecha.replace(/\//g, '-')}_${hora.replace(/:/g, '-')}.pdf`;
   doc.save(fileName);
 };

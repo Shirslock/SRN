@@ -1,21 +1,30 @@
-export const LOCOMOTORAS = Array.from({ length: 21 }, (_, i) => 953 + i);
+export const LOCOMOTORAS = [950, ...Array.from({ length: 21 }, (_, i) => 953 + i)];
 
-export const UBICACIONES = [
-  'Refugio',
-  'Vía tanque',
-  'Cambio 17',
-  'Cochera',
-  'Via 3Ra Plataforma',
-  'Via 4Ta Plataforma'
-];
+// Ubicaciones principales
+export const UBICACIONES = ['José C. Paz', 'Retiro'];
+
+// Áreas por ubicación
+export const AREAS_POR_UBICACION = {
+  'José C. Paz': [
+    'Refugio',
+    'Vía tanque',
+    'Cambio 17',
+    'Cochera',
+    'Vía 3ra Plataforma',
+    'Vía 4ta Plataforma'
+  ],
+  'Retiro': [
+    'Vía 1ra Deposito',
+    'Vía 2da Deposito',
+    'Vía 3ra Deposito',
+    'Vía 4ta Deposito',
+    'Casa del Planchita'
+  ]
+};
 
 export const NIVELES_OPCIONES = ['Mínimo', '¼', '½', '¾', 'Completo'];
 
-// Usuarios autorizados
-export const USUARIOS = {
-  '13096': { legajo: '13096', password: 'Segura123', nombre: 'Administrador Gil Cristian' },
-  '13106': { legajo: '13106', password: '1004', nombre: 'Conductor Schimpf Carlos' }
-};
+export const FILTRO_TURBO_OPCIONES = ['Verde', 'Amarillo', 'Rojo'];
 
 export const INITIAL_CABINA_STATE = {
   manometros: '',
@@ -28,7 +37,9 @@ export const INITIAL_CABINA_STATE = {
   pava: '',
   perchero: '',
   limpiaparabrisas: '',
-  fotos: [],  // NUEVO
+  ats: '',              // NUEVO
+  atsPrecinto: '',
+  fotos: [],
   observaciones: ''
 };
 
@@ -36,7 +47,8 @@ export const INITIAL_EXTINTOR_STATE = {
   estado: '',
   conCarga: false,
   precinto: '',
-  chaveta: ''
+  chaveta: '',
+  vencimiento: ''
 };
 
 export const INITIAL_EXTINTORES_STATE = {
@@ -53,4 +65,9 @@ export const INITIAL_NIVELES_STATE = {
   compresor: '',
   tanqueAgua: '',
   carterMD: ''
+};
+
+export const INITIAL_FILTROS_TURBO_STATE = {
+  filtro1: '',
+  filtro2: ''
 };

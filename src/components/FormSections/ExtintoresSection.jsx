@@ -8,6 +8,29 @@ const ExtintoresSection = ({ data, onChange }) => {
     });
   };
 
+  // Generar opciones de meses (MM/AAAA)
+  const generateVencimientoOpciones = () => {
+    const opciones = [];
+    const currentYear = new Date().getFullYear();
+    const meses = [
+      'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+      'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
+    ];
+
+    // Generar opciones para los próximos 3 años
+    for (let year = currentYear; year <= currentYear + 3; year++) {
+      meses.forEach((mes, index) => {
+        const mesNum = String(index + 1).padStart(2, '0');
+        opciones.push({
+          value: `${mesNum}/${year}`,
+          label: `${mes} ${year}`
+        });
+      });
+    }
+
+    return opciones;
+  };
+
   const ExtintorItem = ({ titulo, ubicacion }) => (
     <div className="border border-gray-200 rounded-lg p-4">
       <h3 className="font-semibold text-gray-800 mb-4">{titulo}</h3>
@@ -37,6 +60,22 @@ const ExtintoresSection = ({ data, onChange }) => {
               Vencido
             </label>
           </div>
+        </div>
+
+        <div>
+          <label className="block text-sm text-gray-700 mb-1">Vencimiento</label>
+          <select
+            value={data[ubicacion].vencimiento}
+            onChange={(e) => handleChange(ubicacion, 'vencimiento', e.target.value)}
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-sm"
+          >
+            <option value="">Seleccionar mes/año...</option>
+            {generateVencimientoOpciones().map(opcion => (
+              <option key={opcion.value} value={opcion.value}>
+                {opcion.label}
+              </option>
+            ))}
+          </select>
         </div>
 
         <div>

@@ -40,7 +40,7 @@ const FotografiasSection = ({ data, onChange }) => {
       </div>
 
       <p className="text-sm text-gray-600 mb-4">
-        Adjunte fotografías generales de la locomotora, exteriores, detalles importantes o cualquier elemento que requiera documentación visual.
+        Adjuntá fotografías generales de la locomotora, exteriores, detalles importantes o cualquier elemento que requiera documentación visual.
       </p>
       
       <div className="flex items-center gap-4 mb-6">
@@ -71,7 +71,7 @@ const FotografiasSection = ({ data, onChange }) => {
         <div className="border-2 border-dashed border-gray-300 rounded-lg p-12 text-center">
           <ImageIcon className="w-16 h-16 text-gray-400 mx-auto mb-4" />
           <p className="text-gray-500 mb-2">No hay fotografías cargadas</p>
-          <p className="text-sm text-gray-400">Haga clic en "Agregar Fotografías" para comenzar</p>
+          <p className="text-sm text-gray-400">Hacé clic en "Agregar Fotografías" para comenzar</p>
         </div>
       )}
 

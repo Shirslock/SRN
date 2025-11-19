@@ -1,21 +1,30 @@
 import React, { useState } from 'react';
-import { Train } from 'lucide-react';
-import { USUARIOS } from '../../utils/constants';
+import { Train, Loader } from 'lucide-react';
+import { authService } from '../../services/authService';
 
 const Login = ({ onLogin }) => {
   const [legajo, setLegajo] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const usuario = USUARIOS[legajo];
-    
-    if (usuario && usuario.password === password) {
-      onLogin({ legajo: usuario.legajo, nombre: usuario.nombre });
-      setError('');
-    } else {
-      setError('Legajo o contraseña incorrectos');
+    setError('');
+    setLoading(true);
+
+    try {
+      const result = await authService.login(legajo, password);
+      
+      if (result.success) {
+        onLogin(result.usuario);
+      } else {
+        setError(result.error || 'Credenciales incorrectas');
+      }
+    } catch (err) {
+      setError('Error al iniciar sesión. Intente nuevamente.');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -28,7 +37,7 @@ const Login = ({ onLogin }) => {
           </div>
         </div>
         <h1 className="text-3xl font-bold text-center text-gray-800 mb-2">
-          SRN
+          Bienvenido a SRN
         </h1>
         <p className="text-center text-gray-600 mb-8">
           Sistema de Registro de Novedades
@@ -46,6 +55,8 @@ const Login = ({ onLogin }) => {
               className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="Ingrese su legajo"
               autoComplete="username"
+              disabled={loading}
+              required
             />
           </div>
           
@@ -60,6 +71,8 @@ const Login = ({ onLogin }) => {
               className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="Ingrese su contraseña"
               autoComplete="current-password"
+              disabled={loading}
+              required
             />
           </div>
           
@@ -71,15 +84,23 @@ const Login = ({ onLogin }) => {
           
           <button
             type="submit"
-            className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition duration-200"
+            disabled={loading}
+            className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition duration-200 flex items-center justify-center gap-2 disabled:bg-gray-400 disabled:cursor-not-allowed"
           >
-            Iniciar Sesión
+            {loading ? (
+              <>
+                <Loader className="w-5 h-5 animate-spin" />
+                Iniciando sesión...
+              </>
+            ) : (
+              'Iniciar Sesión'
+            )}
           </button>
         </form>
 
         <div className="mt-6 pt-6 border-t border-gray-200">
           <p className="text-xs text-gray-500 text-center">
-            Usuarios de prueba: 13106
+            Usuarios: 13106 (Conductor) / Planchita : Si se paga las facturas le damos acceso
           </p>
         </div>
       </div>

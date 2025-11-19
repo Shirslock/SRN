@@ -6,23 +6,30 @@ const CabinaSection = ({ numero, data, onChange }) => {
     onChange({ ...data, [field]: value });
   };
 
-  const handleImageUpload = (e) => {
+    const handleImageUpload = (e) => {
     const files = Array.from(e.target.files);
     const currentImages = data.fotos || [];
     
-    files.forEach(file => {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        const newImages = [...currentImages, {
-          name: file.name,
-          data: reader.result,
-          size: file.size
-        }];
-        handleChange('fotos', newImages);
-      };
-      reader.readAsDataURL(file);
+    // Procesar todos los archivos seleccionados
+    const promises = files.map(file => {
+      return new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          resolve({
+            name: file.name,
+            data: reader.result,
+            size: file.size
+          });
+        };
+        reader.readAsDataURL(file);
+      });
     });
-  };
+
+    // Esperar a que todas las imágenes se carguen
+    Promise.all(promises).then(newImages => {
+      handleChange('fotos', [...currentImages, ...newImages]);
+    });
+  }
 
   const handleRemoveImage = (index) => {
     const newImages = (data.fotos || []).filter((_, i) => i !== index);
@@ -57,8 +64,8 @@ const CabinaSection = ({ numero, data, onChange }) => {
             <option value="Manómetro 1">Manómetro 1</option>
             <option value="Manómetro 2">Manómetro 2</option>
             <option value="Manómetro 3">Manómetro 3</option>
-            <option value="Todos">Todos</option>
-            <option value="Todos con Luces">Todos con Luces</option>
+            <option value="Todos">Todos SIN luces</option>
+            <option value="Todos con Luces">Todos CON luces</option>
           </select>
         </div>
 
@@ -266,7 +273,52 @@ const CabinaSection = ({ numero, data, onChange }) => {
             <option value="Funcionan">Funcionan</option>
           </select>
         </div>
+          <div className="md:col-span-2 border-t pt-4 mt-2">
+          <label className="block text-sm font-semibold text-gray-700 mb-3">
+            ATS (Sistema de Seguridad)
+          </label>
+          <div className="flex gap-6 items-start">
+            <div className="flex gap-4">
+              <label className="flex items-center">
+                <input
+                  type="radio"
+                  value="Habilitado"
+                  checked={data.ats === 'Habilitado'}
+                  onChange={(e) => handleChange('ats', e.target.value)}
+                  className="mr-2"
+                />
+                Habilitado
+              </label>
+              <label className="flex items-center">
+                <input
+                  type="radio"
+                  value="No habilitado"
+                  checked={data.ats === 'No habilitado'}
+                  onChange={(e) => handleChange('ats', e.target.value)}
+                  className="mr-2"
+                />
+                No habilitado
+              </label>
+            </div>
+
+            {data.ats === 'Habilitado' && (
+              <div className="flex-1">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Número de Precinto
+                </label>
+                <input
+                  type="text"
+                  value={data.atsPrecinto || ''}
+                  onChange={(e) => handleChange('atsPrecinto', e.target.value)}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                  placeholder="Ingrese el número de precinto"
+                />
+              </div>
+            )}
+          </div>
+        </div>
       </div>
+      
 
       {/* SECCIÓN DE FOTOS */}
       <div className="mt-8 pt-6 border-t border-gray-200">
