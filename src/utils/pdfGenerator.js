@@ -455,5 +455,13 @@ export const generatePDF = async (
 
   // Descargar PDF
   const fileName = `Registro_Locomotora_${locomotora}_${ubicacion.replace(/\s+/g, '_')}_${area.replace(/\s+/g, '_')}_${fecha.replace(/\//g, '-')}_${hora.replace(/:/g, '-')}.pdf`;
-  doc.save(fileName);
+  
+  // Retornar el blob y nombre en lugar de descargar directamente
+  const pdfBlob = doc.output('blob');
+  
+  return {
+    blob: pdfBlob,
+    fileName: fileName,
+    doc: doc // Por si quieres descargarlo directamente también
+  };
 };

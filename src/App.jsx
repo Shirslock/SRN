@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Download } from 'lucide-react';
 import Login from './components/Auth/Login';
 import Header from './components/Layout/Header';
-import WelcomeModal from './components/Layout/WelcomeModal'; // NUEVO
+import WelcomeModal from './components/Layout/WelcomeModal';
 import CabinaSection from './components/FormSections/CabinaSection';
 import ExtintoresSection from './components/FormSections/ExtintoresSection';
 import NivelesSection from './components/FormSections/NivelesSection';
@@ -12,6 +12,7 @@ import ObservacionesSection from './components/FormSections/ObservacionesSection
 import UserManagement from './components/Admin/UserManagement';
 import { generatePDF } from './utils/pdfGenerator';
 import { authService } from './services/authService';
+import { driveService } from './services/driveService';
 import {
   LOCOMOTORAS,
   UBICACIONES,
@@ -24,7 +25,7 @@ import {
 
 function App() {
   const [usuario, setUsuario] = useState(null);
-  const [showWelcomeModal, setShowWelcomeModal] = useState(false); // NUEVO
+  const [showWelcomeModal, setShowWelcomeModal] = useState(false);
   const [vistaActual, setVistaActual] = useState('registro');
   const [locomotora, setLocomotora] = useState('');
   const [ubicacion, setUbicacion] = useState('');
@@ -39,14 +40,34 @@ function App() {
   const [fotografiasObservaciones, setFotografiasObservaciones] = useState([]);
   const [observacionesGenerales, setObservacionesGenerales] = useState('');
 
+  // Estado de Google Drive
+  const [driveReady, setDriveReady] = useState(false);
+  const [uploadingToDrive, setUploadingToDrive] = useState(false);
+
+  // Inicializar Google Drive
+  useEffect(() => {
+    const initDrive = async () => {
+      try {
+        await driveService.init();
+        setDriveReady(true);
+        console.log('✅ Google Drive inicializado correctamente');
+      } catch (error) {
+        console.error('❌ Error al inicializar Google Drive:', error);
+        setDriveReady(false);
+      }
+    };
+
+    initDrive();
+  }, []);
+
   const handleLogin = (userData) => {
     setUsuario(userData);
-    setShowWelcomeModal(true); // NUEVO - Mostrar modal al login
+    setShowWelcomeModal(true);
   };
 
   const handleLogout = () => {
     setUsuario(null);
-    setShowWelcomeModal(false); // NUEVO
+    setShowWelcomeModal(false);
     setVistaActual('registro');
     setLocomotora('');
     setUbicacion('');
@@ -66,21 +87,76 @@ function App() {
     setArea('');
   };
 
-  const handleGeneratePDF = () => {
-    generatePDF(
-      locomotora, 
-      ubicacion,
-      area,
-      cabina1, 
-      cabina2, 
-      extintores, 
-      niveles,
-      filtrosTurbo,
-      fotografias,
-      fotografiasObservaciones,
-      observacionesGenerales,
-      usuario
-    );
+  const handleGeneratePDF = async () => {
+    try {
+      // Generar PDF
+      const { blob, fileName, doc } = await generatePDF(
+        locomotora, 
+        ubicacion,
+        area,
+        cabina1, 
+        cabina2, 
+        extintores, 
+        niveles,
+        filtrosTurbo,
+        fotografias,
+        fotografiasObservaciones,
+        observacionesGenerales,
+        usuario
+      );
+
+      // Preguntar si quiere subir a Drive (solo si está inicializado)
+      if (driveReady) {
+        const confirmUpload = window.confirm(
+          '¿Deseas subir el PDF a Google Drive?\n\n' +
+          '✅ SÍ: Subir a Drive y descargar localmente\n' +
+          '❌ NO: Solo descargar localmente'
+        );
+
+        if (confirmUpload) {
+          setUploadingToDrive(true);
+          
+          try {
+            // Subir a Google Drive
+            const result = await driveService.uploadPDF(blob, fileName);
+            
+            alert(
+              `✅ ¡PDF subido exitosamente a Google Drive!\n\n` +
+              `📄 Nombre: ${fileName}\n` +
+              `🆔 ID: ${result.id}\n\n` +
+              `El archivo también se descargará localmente.`
+            );
+            
+            // Abrir el archivo en Google Drive
+            window.open(`https://drive.google.com/file/d/${result.id}/view`, '_blank');
+            
+          } catch (error) {
+            console.error('Error al subir a Drive:', error);
+            alert(
+              '❌ Error al subir a Google Drive.\n\n' +
+              'El PDF se descargará solo localmente.\n' +
+              'Verifica tu conexión e intenta nuevamente.'
+            );
+          } finally {
+            setUploadingToDrive(false);
+          }
+        }
+      }
+
+      // Descargar localmente SIEMPRE
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = fileName;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+
+    } catch (error) {
+      console.error('Error al generar PDF:', error);
+      alert('❌ Error al generar el PDF. Revisa la consola para más detalles.');
+    }
   };
 
   if (!usuario) {
@@ -224,14 +300,29 @@ function App() {
                   onFotografiasChange={setFotografiasObservaciones}
                 />
 
-                <div className="flex justify-center mb-8">
+                <div className="flex flex-col items-center gap-4 mb-8">
                   <button
                     onClick={handleGeneratePDF}
-                    className="flex items-center gap-3 bg-green-600 hover:bg-green-700 text-white px-8 py-4 rounded-lg font-semibold text-lg shadow-lg transition duration-200 transform hover:scale-105"
+                    disabled={uploadingToDrive}
+                    className={`flex items-center gap-3 px-8 py-4 rounded-lg font-semibold text-lg shadow-lg transition duration-200 transform hover:scale-105 ${
+                      uploadingToDrive 
+                        ? 'bg-gray-400 cursor-not-allowed' 
+                        : 'bg-green-600 hover:bg-green-700 text-white'
+                    }`}
                   >
                     <Download className="w-6 h-6" />
-                    Descargar Registro PDF
+                    {uploadingToDrive ? 'Subiendo a Drive...' : 'Descargar Registro PDF'}
                   </button>
+                  
+                  {/* Indicador de estado de Google Drive */}
+                  {driveReady && (
+                    <div className="flex items-center gap-2 text-sm text-green-600">
+                      <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                      </svg>
+                      Google Drive listo
+                    </div>
+                  )}
                 </div>
               </>
             )}
