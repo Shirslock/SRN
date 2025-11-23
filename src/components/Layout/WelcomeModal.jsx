@@ -125,23 +125,46 @@ const WelcomeModal = ({ isOpen, onClose, usuario }) => {
 
             {/* Mensaje importante */}
             <div className="mt-4 bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-              <div className="flex items-start gap-3">
-                <AlertCircle className="w-5 h-5 text-yellow-600 mt-0.5 flex-shrink-0" />
-                <div>
-                  <p className="text-sm font-semibold text-yellow-900 mb-1">
-                    Recordatorio Importante
-                  </p>
-                  <p className="text-xs text-yellow-800">
-                    Buenas muchachos!
-                    Actualmente hay 1 seccion de "Fotos Generales" que esta de mas (en estos dias la saco), la de abajo
-                    de todo ya soporta multi foto.
-                    Sistema ATS, dar click en "Habilitado" para colocar N° de precinto.
-                    Saludos
-                    Cristian 
-                  </p>
-                </div>
-              </div>
-            </div>
+  <div className="flex items-start gap-3">
+    <AlertCircle className="w-5 h-5 text-yellow-600 mt-0.5 flex-shrink-0" />
+    <div className="flex-1">
+      <p className="text-sm font-semibold text-yellow-900 mb-3 flex items-center gap-2">
+        📋 Recordatorio Importante
+      </p>
+      
+      {/* Lista de recordatorios */}
+      <div className="space-y-3">
+        <div className="bg-white rounded p-2 border-l-2 border-yellow-400">
+          <p className="text-xs text-gray-500 mb-1">📅 23/11/2025</p>
+          <p className="text-xs text-yellow-800">
+            Actualmente hay 1 sección de "Fotos Generales" que está de más (en estos días la saco), la de abajo de todo ya soporta multi foto.
+          </p>
+        </div>
+        
+        <div className="bg-white rounded p-2 border-l-2 border-blue-400">
+          <p className="text-xs text-gray-500 mb-1">🔧 Sistema ATS</p>
+          <p className="text-xs text-yellow-800">
+            Dar click en "Habilitado" para colocar N° de precinto.
+          </p>
+        </div>
+        
+        <div className="bg-white rounded p-2 border-l-2 border-green-400">
+          <p className="text-xs text-gray-500 mb-1">☁️ Google Drive</p>
+          <p className="text-xs text-yellow-800">
+            Actualmente solo yo puedo guardar en Drive a modo prueba hasta que tengamos mail para centralizar los docs, mientras pueden generar el PDF local.
+
+          </p>
+        </div>
+      </div>
+
+      <div className="mt-3 pt-2 border-t border-yellow-200 text-right">
+        <p className="text-xs text-yellow-700 italic">
+          Saludos - Cristian
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
 
             {/* Información adicional */}
             <div className="mt-4 pt-4 border-t border-gray-200">
