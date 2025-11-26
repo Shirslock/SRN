@@ -100,7 +100,8 @@ const Login = ({ onLogin }) => {
 
         <div className="mt-6 pt-6 border-t border-gray-200">
           <p className="text-xs text-gray-500 text-center">
-            Usuarios: 13106 (Conductor) / Planchita : Si se paga las facturas le damos acceso
+            Usuarios Registrados : 13106, 13096, 13106, 3467,6453,8465.
+  
           </p>
         </div>
       </div>

@@ -55,7 +55,7 @@ const WelcomeModal = ({ isOpen, onClose, usuario }) => {
         />
         
         {/* Modal */}
-        <div className="relative bg-white rounded-lg shadow-2xl max-w-md w-full mx-4 animate-fadeIn">
+        <div className="relative bg-white rounded-lg shadow-2xl max-w-md w-full mx-4 animate-fadeIn max-h-[90vh] overflow-y-auto">
           {/* Header con degradado */}
           <div className="bg-gradient-to-r from-blue-600 to-blue-700 text-white p-6 rounded-t-lg">
             <button
@@ -75,7 +75,7 @@ const WelcomeModal = ({ isOpen, onClose, usuario }) => {
           </div>
 
           {/* Contenido */}
-          <div className="p-6">
+          <div className="p-6 max-h-[60vh] overflow-y-auto">
             {/* Información del usuario */}
             <div className="bg-blue-50 border-l-4 border-blue-500 p-4 rounded-lg mb-4">
               <div className="flex items-start gap-3">
@@ -129,7 +129,7 @@ const WelcomeModal = ({ isOpen, onClose, usuario }) => {
     <AlertCircle className="w-5 h-5 text-yellow-600 mt-0.5 flex-shrink-0" />
     <div className="flex-1">
       <p className="text-sm font-semibold text-yellow-900 mb-3 flex items-center gap-2">
-        📋 Recordatorio Importante
+        📋 NOVEDADES!
       </p>
       
       {/* Lista de recordatorios */}
@@ -181,7 +181,7 @@ const WelcomeModal = ({ isOpen, onClose, usuario }) => {
           </div>
 
           {/* Footer con botón */}
-          <div className="bg-gray-50 px-6 py-4 rounded-b-lg flex justify-end gap-3">
+          <div className="bg-gray-50 px-6 py-4 rounded-b-lg flex justify-end gap-3 sticky bottom-0">
             <button
               onClick={onClose}
               className="px-6 py-2 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition duration-200 shadow-md hover:shadow-lg"
